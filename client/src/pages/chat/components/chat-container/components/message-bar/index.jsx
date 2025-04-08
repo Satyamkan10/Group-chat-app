@@ -43,6 +43,8 @@ const MessageBar = () => {
   };
 
   const handleSendMessage = async () => {
+    if (!message.trim()) return;
+
     if (selectedChatType === "contact") {
       socket.emit("sendMessage", {
         sender: userInfo.id,
@@ -124,18 +126,24 @@ const MessageBar = () => {
           placeholder="Enter message"
           value={message}
           onChange={handleMessageChange}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSendMessage();
+            }
+          }}
         />
         <button
           className="text-neutral-300 focus:border-none focus:outline-none focus:text-white transition-all duration-300"
-          onClick={handleAttachmentClick} // Trigger the file input click
+          onClick={handleAttachmentClick}
         >
           <GrAttachment className="text-2xl" />
         </button>
         <input
           type="file"
-          className="hidden" // Hide the file input element
+          className="hidden"
           ref={fileInputRef}
-          onChange={handleAttachmentChange} // Handle file selection
+          onChange={handleAttachmentChange}
         />
         <div className="relative">
           <button
